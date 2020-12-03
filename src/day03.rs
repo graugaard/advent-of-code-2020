@@ -115,7 +115,7 @@ pub enum Error {
 
 #[cfg(test)]
 mod tests {
-		use crate::day03::{Map, Terrain, Slope};
+		use crate::day03::{Map, Slope};
 		use crate::day03::Terrain::{Ground, Tree};
 		use crate::day03::Error::UnknownTerrain;
 
