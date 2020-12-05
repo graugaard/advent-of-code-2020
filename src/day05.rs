@@ -15,10 +15,6 @@ pub fn print_solution() {
 		println!("Day 05 Solution Part 2: {}", get_my_seat(&puzzle));
 }
 
-struct Seat {
-
-}
-
 /// my seat is a seat not in the list and such
 /// that both seat + 1 and seat - 1 is
 fn get_my_seat(str: &str) -> u32 {
@@ -74,17 +70,17 @@ mod test {
 		use crate::day05::{determine_row, determine_column, determine_seat_id};
 
 		#[test]
-		fn row_BBBBFFB_is_row_0b111_100_1() {
+		fn row_bbbbffb_is_row_0b111_100_1() {
 				assert_eq!(determine_row("BBBBFFB"), 0b111_100_1);
 		}
 
 		#[test]
-		fn row_BFFFBBF_is_0b1000110() {
+		fn row_bfffbbf_is_0b1000110() {
 				assert_eq!(determine_row("BFFFBBF"), 0b1000110);
 		}
 
 		#[test]
-		fn column_RLR_is_0b101() {
+		fn column_rlr_is_0b101() {
 				assert_eq!(determine_column("RLR"), 0b101);
 		}
 
