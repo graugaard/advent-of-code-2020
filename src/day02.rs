@@ -63,13 +63,13 @@ pub fn print_solution() {
 													 .filter(|password| check_password(password))
 													 .count();
 
-		println!("Soulution day02 Part 1: {}", n_valid);
+		println!("Day 02 Solution Part 2: {}", n_valid);
 
 		let n_valid = passwords.split("\n")
 			.filter(|password| test_with_position(password))
 			.count();
 
-		println!("Solution day02 Part 2: {}", n_valid)
+		println!("Day 02 Solution Part 2: {}", n_valid)
 }
 
 #[cfg(test)]
