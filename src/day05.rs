@@ -11,8 +11,8 @@ pub fn print_solution() {
 				Some(id) => id,
 				None => 0
 		};
-		println!("Day 05 Solution Part 1 {}", max_id);
-		println!("Day 05 Solution Part 2 {}", get_my_seat(&puzzle));
+		println!("Day 05 Solution Part 1: {}", max_id);
+		println!("Day 05 Solution Part 2: {}", get_my_seat(&puzzle));
 }
 
 struct Seat {
