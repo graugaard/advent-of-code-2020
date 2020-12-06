@@ -1,11 +1,12 @@
 use std::collections::HashSet;
 use std::iter::FromIterator;
 use crate::puzzle_input;
+use crate::util::group_lines;
 
-pub fn get_answers_from_group(str: &str) -> Vec<HashSet<char>> {
+pub fn get_answer_from_group_by_vec(group: &[&str]) -> Vec<HashSet<char>> {
 		let mut vec = Vec::new();
-		for answer in str.lines() {
-				vec.push(HashSet::from_iter(answer.chars()))
+		for answer in group {
+				vec.push(HashSet::from_iter(answer.chars()));
 		}
 
 		vec
@@ -13,12 +14,9 @@ pub fn get_answers_from_group(str: &str) -> Vec<HashSet<char>> {
 
 pub fn get_combined_answers_of_groups(str: &str) -> Vec<HashSet<char>> {
 		let mut result = Vec::new();
-		for group in str.split("\r\n\r\n") {
-				let group = group.trim();
-				if group.is_empty() {
-						continue;
-				}
-				let answers = get_answers_from_group(group);
+		group_lines(str);
+		for group in group_lines(str) {
+				let answers = get_answer_from_group_by_vec(&group);
 
 				let mut common: HashSet<char> = HashSet::from_iter("".chars());
 				for set in answers {
@@ -31,12 +29,8 @@ pub fn get_combined_answers_of_groups(str: &str) -> Vec<HashSet<char>> {
 
 pub fn get_common_answer_of_groups(str: &str) -> Vec<HashSet<char>> {
 		let mut result = Vec::new();
-		for group in str.split("\r\n\r\n") {
-				let group = group.trim();
-				if group.is_empty() {
-						continue;
-				}
-				let answers = get_answers_from_group(group);
+		for group in group_lines(str) {
+				let answers = get_answer_from_group_by_vec(&group);
 
 				let mut common: HashSet<char> = HashSet::from_iter("abcdefghijklmnopqrstuvwxyz".chars());
 				for set in answers {
@@ -67,19 +61,19 @@ pub fn sum_answers(answers: &[HashSet<char>]) -> usize {
 
 #[cfg(test)]
 mod tests {
-		use crate::day06::{get_answers_from_group, get_combined_answers_of_groups, sum_answers, get_common_answer_of_groups};
+		use crate::day06::{get_combined_answers_of_groups, sum_answers, get_common_answer_of_groups, get_answer_from_group_by_vec};
 		use std::collections::HashSet;
 		use std::iter::FromIterator;
 
 		#[test]
 		fn a_group_of_one_member() {
-				assert_eq!(get_answers_from_group("abcd"), vec![HashSet::from_iter(vec!['a', 'b', 'c', 'd'])]);
+				assert_eq!(get_answer_from_group_by_vec(&["abcd"]), vec![HashSet::from_iter(vec!['a', 'b', 'c', 'd'])]);
 		}
 
 		#[test]
 		fn a_group_of_multiple_members() {
 				assert_eq!(
-						get_answers_from_group("abc\ncb\r\nfge"),
+						get_answer_from_group_by_vec(&["abc", "cb", "fge"]),
 						vec![
 								HashSet::from_iter(vec!['a', 'b', 'c']),
 								HashSet::from_iter(vec!['c', 'b']),
@@ -112,7 +106,7 @@ mod tests {
 
 		#[test]
 		fn sum_of_answers() {
-				let common = get_combined_answers_of_groups("abc\r\n\r\na\r\nb\r\nc\r\n\r\nab\r\nac\r\n\r\na\r\na\r\na\r\na\r\n\r\nb");
+				let common = get_combined_answers_of_groups("abc\n\r\na\r\nb\r\nc\r\n\r\nab\r\nac\r\n\na\r\na\r\na\r\na\r\n\r\nb");
 				assert_eq!(
 						sum_answers(&common),
 						11
@@ -121,7 +115,7 @@ mod tests {
 
 		#[test]
 		fn sum_common_answers() {
-				let common = get_common_answer_of_groups("abc\r\n\r\na\r\nb\r\nc\r\n\r\nab\r\nac\r\n\r\na\r\na\r\na\r\na\r\n\r\nb");
+				let common = get_common_answer_of_groups("abc\r\n\r\na\r\nb\r\nc\r\n\r\nab\r\nac\r\n\r\na\r\na\r\na\r\na\n\nb");
 				assert_eq!(
 						sum_answers(&common),
 						6

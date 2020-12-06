@@ -4,6 +4,7 @@ mod day03;
 mod day04;
 mod day05;
 mod day06;
+mod util;
 mod puzzle_input;
 
 fn main() {
