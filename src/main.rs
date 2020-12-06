@@ -3,6 +3,7 @@ mod day02;
 mod day03;
 mod day04;
 mod day05;
+mod day06;
 mod puzzle_input;
 
 fn main() {
@@ -11,4 +12,5 @@ fn main() {
     day03::print_solution();
     day04::print_solution();
     day05::print_solution();
+    day06::print_solution();
 }
