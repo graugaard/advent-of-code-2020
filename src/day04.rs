@@ -1,5 +1,6 @@
 use std::collections::{HashMap, HashSet};
 use crate::puzzle_input;
+use crate::util::GroupIterator;
 
 const VALID_EYE_COLORS: [&str; 7] = [
 		"amb", "blu", "brn", "gry", "grn", "hzl", "oth"];
@@ -156,10 +157,11 @@ pub fn print_solution() {
 pub fn count_with_filter<T>(input: &str, f: T) -> usize
 		where T: Fn(&HashMap<String, String>) -> bool
 {
-		input.split("\r\n\r\n")
-				 .map(|line| process_line(line))
-				 .filter(f)
-				 .count()
+		GroupIterator::new(input)
+			.map(|g| g.as_str())
+			.map(|line| process_line(line))
+			.filter(f)
+			.count()
 }
 
 #[cfg(test)]
@@ -327,7 +329,7 @@ mod tests {
 				passport.insert("pid".to_string(), "000111222".to_string());
 				assert_eq!(is_valid_passport(&passport), true);
 
-				passport.insert("pid".to_string(),"12345678".to_string());
+				passport.insert("pid".to_string(), "12345678".to_string());
 				assert_eq!(is_valid_passport(&passport), false);
 
 				passport.insert("pid".to_string(), "aaabbbccc".to_string());
