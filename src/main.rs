@@ -4,6 +4,7 @@ mod day03;
 mod day04;
 mod day05;
 mod day06;
+mod day08;
 mod puzzle_input;
 mod util;
 
@@ -14,4 +15,5 @@ fn main() {
     day04::print_solution();
     day05::print_solution();
     day06::print_solution();
+    day08::print_solution();
 }
