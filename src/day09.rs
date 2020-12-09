@@ -1,4 +1,3 @@
-use std::process::id;
 use crate::puzzle_input;
 
 pub fn print_solution() {
@@ -7,8 +6,9 @@ pub fn print_solution() {
       .map(|n| n.parse::<i64>().unwrap())
       .collect();
 
-
-    println!("Day 09 Solution Part 1: {:?}", find_xmas_violation(&input, 25));
+    let violation = find_xmas_violation(&input, 25);
+    println!("Day 09 Solution Part 1: {:?}", violation);
+    println!("Day 09 Solution Part 2: {:?}", find_contiguous_min_max_sum(&input, violation.unwrap()));
 }
 
 pub fn find_xmas_violation(list: &[i64], n_previous: usize) -> Option<i64> {
@@ -30,9 +30,31 @@ pub fn find_xmas_violation(list: &[i64], n_previous: usize) -> Option<i64> {
     None
 }
 
+pub fn find_contiguous_min_max_sum(list: &[i64], target: i64) -> i64 {
+    let mut lower = 0;
+    let mut higher = 0;
+    let mut cur_sum = 0;
+    while cur_sum != target || higher < list.len() {
+        if cur_sum < target {
+            cur_sum += list[higher];
+            higher += 1;
+        } else if cur_sum > target {
+            cur_sum -= list[lower];
+            lower += 1;
+        }
+        else {
+            let mut vec = list[lower..higher].to_vec();
+            vec.sort();
+            return vec[0] + vec[vec.len() - 1];
+        }
+    }
+
+    0
+}
+
 #[cfg(test)]
 mod tests {
-    use crate::day09::find_xmas_violation;
+    use crate::day09::{find_xmas_violation, find_contiguous_min_max_sum};
 
     #[test]
     fn test_array_with_no_violation() {
@@ -65,5 +87,32 @@ mod tests {
         ];
 
         assert_eq!(find_xmas_violation(&example, 5), Some(127));
+    }
+
+    #[test]
+    fn test_find_min_max_contiguous_sum() {
+        let example = [
+            35,
+            20,
+            15,
+            25,
+            47,
+            40,
+            62,
+            55,
+            65,
+            95,
+            102,
+            117,
+            150,
+            182,
+            127,
+            219,
+            299,
+            277,
+            309,
+            576,
+        ];
+        assert_eq!(find_contiguous_min_max_sum(&example, 127), 62);
     }
 }
