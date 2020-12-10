@@ -60,10 +60,6 @@ impl<'a> Computer<'a> {
         }
     }
 
-    fn instr_ptr(&self) -> i64 {
-        self.instr_ptr
-    }
-
     fn accumulated(&self) -> i64 {
         self.accumulator
     }
@@ -91,10 +87,6 @@ impl<'a> Computer<'a> {
             return None;
         }
         Some(self.instr_ptr as usize >= self.instructions.len())
-    }
-
-    fn halted(&self) -> bool {
-        self.halted
     }
 }
 
@@ -164,9 +156,7 @@ mod tests {
     fn freshly_initialized_computer() {
         let comp = Computer::parse_program("nop +0");
         let comp = Computer::init(&comp);
-        assert_eq!(comp.instr_ptr(), 0);
         assert_eq!(comp.accumulated(), 0);
-        assert_eq!(comp.halted(), false);
     }
 
     #[test]
@@ -174,7 +164,6 @@ mod tests {
         let comp = Computer::parse_program("nop +0");
         let mut comp = Computer::init(&comp);
         comp.execute_step();
-        assert_eq!(comp.instr_ptr(), 1);
         assert_eq!(comp.accumulated(), 0);
     }
 
@@ -183,7 +172,6 @@ mod tests {
         let comp = Computer::parse_program("acc +4");
         let mut comp = Computer::init(&comp);
         comp.execute_step();
-        assert_eq!(comp.instr_ptr(), 1);
         assert_eq!(comp.accumulated(), 4);
         assert_eq!(comp.ended_without_loop(), None);
     }
@@ -204,7 +192,6 @@ mod tests {
         let comp = Computer::parse_program("jmp +2\nacc +1\nnop +0");
         let mut comp = Computer::init(&comp);
         comp.execute_step();
-        assert_eq!(comp.instr_ptr(), 2);
         assert_eq!(comp.accumulated(), 0);
     }
 
@@ -213,9 +200,7 @@ mod tests {
         let comp = Computer::parse_program("jmp +2\nacc +1\nnop +0\njmp -2");
         let mut comp = Computer::init(&comp);
         comp.execute_until_end();
-        assert_eq!(comp.halted(), true);
         assert_eq!(comp.accumulated(), 1);
-        assert_eq!(comp.instr_ptr(), 2);
         assert_eq!(comp.ended_without_loop(), Some(false))
     }
 
@@ -224,7 +209,6 @@ mod tests {
         let comp = Computer::parse_program("jmp +2\nacc +1\nnop +0\nacc +5");
         let mut comp = Computer::init(&comp);
         comp.execute_until_end();
-        assert_eq!(comp.instr_ptr(), 4);
         assert_eq!(comp.accumulated(), 5);
         assert_eq!(comp.ended_without_loop(), Some(true));
     }
