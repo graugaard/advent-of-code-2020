@@ -17,13 +17,16 @@ pub fn print_solution() {
 
 /// Assumes the adapters are in sorted order
 pub fn count_arrangements(adapters: &[u64]) -> u64 {
-    let mut cache: Vec<u64> = vec![0; adapters.len()];
-
+    let mut cache = [0; 3];
     cache[0] = 1;
+
     if adapters[1] <= 3 {
         cache[1] += 1;
     }
-    cache[1] += cache[0];
+
+    if adapters[1] - adapters[0] <= 3 {
+        cache[1] += cache[0];
+    }
 
     if adapters[2] <= 3 {
         cache[2] += 1;
@@ -36,14 +39,18 @@ pub fn count_arrangements(adapters: &[u64]) -> u64 {
     }
 
     for idx in 3..adapters.len() {
+        let mut tmp = 0;
         for offset in 1..4 {
             if adapters[idx] - adapters[idx - offset] <= 3 {
-                cache[idx] += cache[idx - offset];
+                tmp += cache[3 - offset];
             }
         }
+        cache[0] = cache[1];
+        cache[1] = cache[2];
+        cache[2] = tmp;
     }
 
-    cache[cache.len() - 1]
+    cache[2]
 }
 
 /// Assumes that the adapters are in sorted order
@@ -89,7 +96,7 @@ mod tests {
     fn test_count_arrangements_small_examples() {
         let mut adapters = [16, 10, 15, 5, 1, 11, 7, 19, 6, 12, 4];
         adapters.sort();
-
+        println!("{:?}", adapters);
         assert_eq!(count_arrangements(&adapters), 8);
     }
 
