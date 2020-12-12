@@ -1,3 +1,4 @@
+pub mod map;
 /// Represent a group of a larger text.
 #[derive(PartialOrd, PartialEq, Debug)]
 pub struct Group<'a> {
