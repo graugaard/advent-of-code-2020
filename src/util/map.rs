@@ -60,63 +60,20 @@ where
     pub fn neighbours(&self, x: usize, y: usize) -> Vec<Coordinate<T>> {
         let mut result = Vec::with_capacity(8);
 
-        if x >= 1 {
-            result.push(Coordinate::new(
-                x - 1,
-                y,
-                self.terrain_at(x - 1, y).unwrap(),
-            ));
-            if y >= 1 {
-                result.push(Coordinate::new(
-                    x - 1,
-                    y - 1,
-                    self.terrain_at(x - 1, y - 1).unwrap(),
-                ));
-            }
-            if y + 1 < self.height() {
-                result.push(Coordinate::new(
-                    x - 1,
-                    y + 1,
-                    self.terrain_at(x - 1, y + 1).unwrap(),
-                ))
-            }
-        }
+        let offsets = [
+            (-1, -1),
+            (0, -1),
+            (1, -1),
+            (-1, 0),
+            (1, 0),
+            (-1, 1),
+            (0, 1),
+            (1, 1),
+        ];
 
-        if y + 1 < self.height() {
-            result.push(Coordinate::new(
-                x,
-                y + 1,
-                self.terrain_at(x, y + 1).unwrap(),
-            ))
-        }
-
-        if y >= 1 {
-            result.push(Coordinate::new(
-                x,
-                y - 1,
-                self.terrain_at(x, y - 1).unwrap(),
-            ))
-        }
-
-        if x + 1 < self.width {
-            result.push(Coordinate::new(
-                x + 1,
-                y,
-                self.terrain_at(x + 1, y).unwrap(),
-            ));
-            if y + 1 < self.height() {
-                result.push(Coordinate::new(
-                    x + 1,
-                    y + 1,
-                    self.terrain_at(x + 1, y + 1).unwrap(),
-                ));
-            }
-            if y >= 1 {
-                result.push(Coordinate::new(
-                    x + 1,
-                    y - 1,
-                    self.terrain_at(x + 1, y - 1).unwrap(),
-                ))
+        for &offset in &offsets {
+            if let Some(cord) = self.cord_at((x, y), offset) {
+                result.push(cord);
             }
         }
 
