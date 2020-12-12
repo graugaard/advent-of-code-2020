@@ -52,6 +52,10 @@ where
         }
     }
 
+    pub fn terrain_at_point(&self, p: (usize, usize)) -> Option<&T> {
+        Map::terrain_at(self, p.0, p.1)
+    }
+
     /// Get the neighbours of at the coordinate `(x, y)`
     pub fn neighbours(&self, x: usize, y: usize) -> Vec<Coordinate<T>> {
         let mut result = Vec::with_capacity(8);
@@ -117,6 +121,20 @@ where
         }
 
         result
+    }
+
+    pub fn cord_at(&self, p: (usize, usize), offset: (isize, isize)) -> Option<Coordinate<T>> {
+        let p = (p.0 as isize, p.1 as isize);
+        let new_point = (p.0 + offset.0, p.1 + offset.1);
+
+        if new_point.0 >= 0 && new_point.1 >= 0 {
+            let x = new_point.0 as usize;
+            let y = new_point.1 as usize;
+            self.terrain_at_point((x, y))
+                .map(|t| Coordinate::from_point((x, y), t))
+        } else {
+            None
+        }
     }
 
     /// Iterate over the coordinates of the map
@@ -191,6 +209,10 @@ where
 {
     fn new(x: usize, y: usize, terrain: &'a T) -> Self {
         Coordinate { x, y, terrain }
+    }
+
+    fn from_point(p: (usize, usize), terrain: &'a T) -> Self {
+        Coordinate::new(p.0, p.1, terrain)
     }
 
     pub fn x(&self) -> usize {
@@ -358,5 +380,27 @@ mod tests {
                 Coordinate::new(2, 1, &TestTerrain::Five),
             ]
         )
+    }
+
+    #[test]
+    fn test_cord_at_point() {
+        let map = Map::<TestTerrain>::configure(
+            "\
+            11223344\n\
+            55667700\n\
+            14234123\
+            ",
+        )
+        .unwrap();
+
+        assert_eq!(map.cord_at((1, 0), (0, -1)), None);
+        assert_eq!(map.cord_at((1, 0), (-2, 0)), None);
+        assert_eq!(
+            map.cord_at((2, 1), (-1, -1)),
+            Some(Coordinate::new(1, 0, &TestTerrain::One))
+        );
+
+        assert_eq!(map.cord_at((5, 2), (3, 0)), None);
+        assert_eq!(map.cord_at((7, 1), (-1, 2)), None);
     }
 }
