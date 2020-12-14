@@ -1,7 +1,26 @@
-#[derive(Debug, Eq, PartialEq)]
+use core::fmt;
+use std::fmt::{Debug, Formatter};
+
+#[derive(Eq, PartialEq)]
 pub struct Map<Terrain> {
     map: Vec<Terrain>,
     width: usize,
+}
+impl<T> Debug for Map<T>
+where
+    T: Terrain,
+{
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let mut s = String::with_capacity(self.map.len() + self.width + 1);
+        s.push('\n');
+        for h in 0..self.height() {
+            for t in &self.map[h * self.width..(h + 1) * self.width] {
+                s.push(t.to_char())
+            }
+            s.push('\n')
+        }
+        f.write_str(&s)
+    }
 }
 
 impl<T> Map<T>
@@ -78,6 +97,25 @@ where
         }
 
         result
+    }
+
+    pub fn step_until<F>(
+        &self,
+        start: (usize, usize),
+        step_size: (isize, isize),
+        is_end: F,
+    ) -> Option<Coordinate<T>>
+    where
+        F: Fn(&Coordinate<T>) -> bool,
+    {
+        let mut current_step = step_size;
+        while let Some(c) = self.cord_at(start, current_step) {
+            if is_end(&c) {
+                return Some(c);
+            }
+            current_step = (current_step.0 + step_size.0, current_step.1 + step_size.1);
+        }
+        None
     }
 
     pub fn cord_at(&self, p: (usize, usize), offset: (isize, isize)) -> Option<Coordinate<T>> {
@@ -186,10 +224,12 @@ where
 }
 
 /// The Terrain of a map.
-pub trait Terrain: Eq + Sized + PartialEq {
+pub trait Terrain: Eq + Sized + PartialEq + Debug {
     /// Given a `char c`, return the terrain if it matches one,
     /// otherwise it returns a `TerrainErr`
     fn from_char(c: char) -> Result<Self, TerrainErr>;
+
+    fn to_char(&self) -> char;
 }
 
 #[derive(Eq, PartialEq, Debug)]
@@ -232,6 +272,20 @@ mod tests {
                 '8' => Ok(TestTerrain::Eight),
 
                 _ => Err(TerrainErr::UnknownTerrain(c)),
+            }
+        }
+
+        fn to_char(&self) -> char {
+            match self {
+                TestTerrain::Zero => '0',
+                TestTerrain::One => '1',
+                TestTerrain::Two => '2',
+                TestTerrain::Three => '3',
+                TestTerrain::Four => '4',
+                TestTerrain::Five => '5',
+                TestTerrain::Six => '6',
+                TestTerrain::Seven => '7',
+                TestTerrain::Eight => '8',
             }
         }
     }
@@ -359,5 +413,23 @@ mod tests {
 
         assert_eq!(map.cord_at((5, 2), (3, 0)), None);
         assert_eq!(map.cord_at((7, 1), (-1, 2)), None);
+    }
+
+    #[test]
+    fn test_step_until() {
+        let map = Map::<TestTerrain>::configure(
+            "\
+            1333113\n\
+            5545777\n\
+            1113557\n\
+            1111111\
+            ",
+        )
+        .unwrap();
+
+        assert_eq!(
+            map.step_until((6, 3), (-2, -1), |c| c.terrain.eq(&TestTerrain::Four)),
+            Some(Coordinate::from_point((2, 1), &TestTerrain::Four))
+        );
     }
 }
