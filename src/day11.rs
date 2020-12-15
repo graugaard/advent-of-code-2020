@@ -153,7 +153,7 @@ impl Map<Type> {
     {
         let mut prev = next(self);
         let mut cur;
-        for r in 1..round_limit {
+        for _ in 1..round_limit {
             cur = next(&prev);
             {
                 if cur.eq(&prev) {
