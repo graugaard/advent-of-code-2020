@@ -15,4 +15,5 @@ fn main() {
     day04::print_solution();
     day05::print_solution();
     day06::print_solution();
+    day07::print_solution();
 }
