@@ -206,6 +206,7 @@ mod tests {
         ship.move_ship(&Direction::Right(90));
 
         let expected = Ship::new((0, 0), 0);
+        assert_eq!(ship, expected);
     }
 
     #[test]
