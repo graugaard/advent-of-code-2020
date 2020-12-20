@@ -8,10 +8,10 @@ pub fn print_solution() {
     let mut map = Space::new(&start);
     map.advance_time(6);
 
-    println!("Day 15 Solution Part 1: {}", map.active_cells.len());
+    println!("Day 17 Solution Part 1: {}", map.active_cells.len());
     let start = append_dimension(&start);
     println!(
-        "Day 15 Solution Part 2: {}",
+        "Day 17 Solution Part 2: {}",
         run_simulation(&start, 6).len()
     )
 }
@@ -65,12 +65,8 @@ impl Space {
                             let p = (cell.0 + x, cell.1 + y, cell.2 + z);
                             let value = map.get(&p);
                             let new_value = match value {
-                                None => {
-                                     1
-                                },
-                                Some(v) => {
-                                     v + 1
-                                }
+                                None => 1,
+                                Some(v) => v + 1,
                             };
 
                             map.insert(p, new_value);
@@ -116,12 +112,8 @@ fn run_simulation(start: &[(i64, i64, i64, i64)], rounds: i64) -> Vec<(i64, i64,
                             let p = (cell.0 + x, cell.1 + y, cell.2 + z, cell.3 + w);
                             let value = map.get(&p);
                             let new_value = match value {
-                                None => {
-                                    1
-                                },
-                                Some(v) => {
-                                    v + 1
-                                }
+                                None => 1,
+                                Some(v) => v + 1,
                             };
 
                             map.insert(p, new_value);
