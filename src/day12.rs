@@ -14,10 +14,14 @@ pub fn print_solution() {
     }
 
     println!("Day 12 Solution Part 1: {}", ship.distance());
+    println!(
+        "Day 12 Solution Part 2: {}",
+        waypoint_simulation(&directions)
+    );
 }
 
 #[derive(Debug, Eq, PartialEq)]
-enum Direction {
+pub enum Direction {
     North(i64),
     South(i64),
     East(i64),
@@ -25,6 +29,30 @@ enum Direction {
     Right(i64),
     Left(i64),
     Forward(i64),
+}
+
+pub fn waypoint_simulation(movement: &[Direction]) -> u64 {
+    let mut ship = Ship::default();
+    let mut waypoint = Ship::new((10, 1), 0);
+
+    for direction in movement {
+        match direction {
+            Direction::Forward(steps) => {
+                ship.move_towards(waypoint.position, *steps);
+            }
+            Direction::Left(degree) => {
+                waypoint.rotate_around_orig_clockwise(360 - degree);
+            }
+            Direction::Right(degree) => {
+                waypoint.rotate_around_orig_clockwise(*degree);
+            }
+            _ => {
+                waypoint.move_ship(direction);
+            }
+        }
+    }
+
+    ship.distance()
 }
 
 impl FromStr for Direction {
@@ -71,6 +99,24 @@ impl Ship {
 
     pub fn distance(&self) -> u64 {
         (self.position.0.abs() + self.position.1.abs()) as u64
+    }
+
+    pub fn move_towards(&mut self, step_size: (i64, i64), n_steps: i64) {
+        self.position = (
+            self.position.0 + step_size.0 * n_steps,
+            self.position.1 + step_size.1 * n_steps,
+        );
+    }
+
+    /// Done clockwise
+    pub fn rotate_around_orig_clockwise(&mut self, degree: i64) {
+        if degree == 90 {
+            self.position = (self.position.1, -self.position.0)
+        } else if degree == 180 {
+            self.position = (-self.position.0, -self.position.1)
+        } else if degree == 270 {
+            self.position = (-self.position.1, self.position.0)
+        }
     }
 
     pub fn move_ship(&mut self, direction: &Direction) {
@@ -130,7 +176,7 @@ impl Default for Ship {
 
 #[cfg(test)]
 mod tests {
-    use crate::day12::{Direction, Ship};
+    use crate::day12::{waypoint_simulation, Direction, Ship};
 
     #[test]
     fn derive_direction_from_string() {
@@ -183,5 +229,20 @@ mod tests {
         ship.move_ship(&Direction::Forward(5));
         let expected = Ship::new((-5, 0), 270);
         assert_eq!(ship, expected);
+    }
+
+    #[test]
+    fn waypoint_forward() {
+        let directions = vec![
+            Direction::Forward(10),
+            Direction::North(3),
+            Direction::Forward(7),
+            Direction::Right(90),
+            Direction::Forward(11),
+        ];
+
+        let distance = waypoint_simulation(&directions);
+
+        assert_eq!(distance, 286)
     }
 }
