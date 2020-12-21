@@ -1,6 +1,6 @@
-use std::str::FromStr;
-use std::collections::HashMap;
 use crate::util::puzzle_input;
+use std::collections::HashMap;
+use std::str::FromStr;
 
 pub fn print_solution() {
     let input = puzzle_input::read_input("day14");
@@ -17,7 +17,7 @@ struct Mask {
     mask: Vec<(usize, u8)>,
 }
 
-fn run_program(str: &str) -> HashMap<u64, u64>  {
+fn run_program(str: &str) -> HashMap<u64, u64> {
     let mut current_mask = Mask::default();
     let mut state = HashMap::new();
     for line in str.lines() {
@@ -26,7 +26,9 @@ fn run_program(str: &str) -> HashMap<u64, u64>  {
         if left.starts_with("mask") {
             current_mask = right.parse::<Mask>().expect("Is a mask");
         } else {
-            let address = left["mem[".len().. left.len() - 1].parse::<u64>().expect("Is an int");
+            let address = left["mem[".len()..left.len() - 1]
+                .parse::<u64>()
+                .expect("Is an int");
             let mem_val = right.parse::<u64>().expect("Is an int");
             state.insert(address, current_mask.apply(mem_val));
         }
@@ -36,9 +38,7 @@ fn run_program(str: &str) -> HashMap<u64, u64>  {
 
 impl Default for Mask {
     fn default() -> Self {
-        Self {
-            mask: Vec::new()
-        }
+        Self { mask: Vec::new() }
     }
 }
 
@@ -48,8 +48,7 @@ impl Mask {
         for i in 0..64 {
             result = result << 1;
             let n = match self.mask.iter().find(|&bit| bit.0 == i) {
-                Some((_, i)) => {
-                    *i as u64},
+                Some((_, i)) => *i as u64,
                 None => {
                     if bits & (1 << 63 - i) != 0 {
                         1
@@ -103,11 +102,11 @@ mod tests {
 
     #[test]
     fn first_example() {
-        let mask = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X".parse::<Mask>().expect("Valid mask");
+        let mask = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X"
+            .parse::<Mask>()
+            .expect("Valid mask");
         let new_number = mask.apply(0b000000000000000000000000000000001011);
 
-        assert_eq!(
-            new_number,
-            0b000000000000000000000000000001001001);
+        assert_eq!(new_number, 0b000000000000000000000000000001001001);
     }
 }
