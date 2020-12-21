@@ -1,4 +1,4 @@
-use crate::puzzle_input;
+use crate::util::puzzle_input;
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::iter::FromIterator;
 use std::str::FromStr;

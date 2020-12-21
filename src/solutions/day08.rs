@@ -1,5 +1,5 @@
 use crate::day08::Operation::{Acc, Jmp, NoOp};
-use crate::puzzle_input;
+use crate::util::puzzle_input;
 use std::collections::HashSet;
 
 #[derive(PartialOrd, PartialEq, Debug)]

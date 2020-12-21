@@ -1,4 +1,4 @@
-use crate::puzzle_input;
+use crate::util::puzzle_input;
 use crate::util::{Group, GroupIterator};
 use std::collections::HashSet;
 use std::iter::FromIterator;

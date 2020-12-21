@@ -1,4 +1,4 @@
-use crate::puzzle_input;
+use crate::util::puzzle_input;
 
 pub fn print_solution() {
     let input: Vec<i64> = puzzle_input::read_input("day09")

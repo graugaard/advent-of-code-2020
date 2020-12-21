@@ -1,4 +1,4 @@
-use crate::puzzle_input;
+use crate::util::puzzle_input;
 use puzzle_input::read_input;
 
 pub fn print_solution() {

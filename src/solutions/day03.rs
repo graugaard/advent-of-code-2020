@@ -1,6 +1,6 @@
 use crate::day03::Error::UnknownTerrain;
 use crate::day03::Terrain::{Ground, Tree};
-use crate::puzzle_input;
+use crate::util::puzzle_input;
 
 pub struct Map {
     map: Vec<Terrain>,

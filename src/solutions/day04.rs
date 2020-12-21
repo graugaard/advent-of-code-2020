@@ -1,4 +1,4 @@
-use crate::puzzle_input;
+use crate::util::puzzle_input;
 use crate::util::GroupIterator;
 use std::collections::{HashMap, HashSet};
 

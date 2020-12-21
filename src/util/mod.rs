@@ -1,4 +1,5 @@
 pub mod map;
+pub mod puzzle_input;
 /// Represent a group of a larger text.
 #[derive(PartialOrd, PartialEq, Debug)]
 pub struct Group<'a> {

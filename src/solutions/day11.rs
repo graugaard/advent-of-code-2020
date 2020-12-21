@@ -1,5 +1,5 @@
 use crate::day11::Type::*;
-use crate::puzzle_input;
+use crate::util::puzzle_input;
 use crate::util::map::{Map, Terrain, TerrainErr};
 
 pub fn print_solution() {
