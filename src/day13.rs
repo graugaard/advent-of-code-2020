@@ -6,17 +6,17 @@ pub fn print_solution() {
 
     let arrival = lines
         .next()
-        .map(|s| s.parse::<u64>())
+        .map(|s| s.parse::<i64>())
         .map(|r| r.expect("Is an int"))
         .unwrap();
 
-    let busses: Vec<(u64, u64)> = lines
+    let busses: Vec<(i64, i64)> = lines
         .next()
         .expect("Tere is a second line")
         .split(",")
         .enumerate()
         .filter(|&(_, s)| !s.starts_with("x"))
-        .map(|(idx, s)| (idx as u64, s.parse::<u64>().expect("Is int")))
+        .map(|(idx, s)| (idx as i64, s.parse::<i64>().expect("Is int")))
         .collect();
 
     let departure = earliest_depart(arrival, &busses);
@@ -27,8 +27,8 @@ pub fn print_solution() {
     );
 }
 
-fn earliest_depart(arrival: u64, busses: &[(u64, u64)]) -> (u64, u64) {
-    let mut depart_time = u64::MAX;
+fn earliest_depart(arrival: i64, busses: &[(i64, i64)]) -> (i64, i64) {
+    let mut depart_time = i64::MAX;
     let mut used_bus = 0;
     for bus in busses {
         let time_to_next_arrival = bus.1 - (arrival % bus.1);
@@ -41,7 +41,7 @@ fn earliest_depart(arrival: u64, busses: &[(u64, u64)]) -> (u64, u64) {
     (used_bus, depart_time)
 }
 
-fn calc_chinese_remainder(equations: &[(u64, u64)]) -> u64 {
+fn calc_chinese_remainder(equations: &[(i64, i64)]) -> i64 {
     let mut m = 1;
     for eq in equations.iter() {
         m *= eq.1 as i64;
@@ -49,17 +49,17 @@ fn calc_chinese_remainder(equations: &[(u64, u64)]) -> u64 {
 
     let mut res: i64 = 0;
     for eq in equations.iter() {
-        let factor = (m / (eq.1 as i64));
-        let (inv, _) = extended_euclid(factor, eq.1 as i64);
+        let factor = m / eq.1;
+        let (inv, _) = extended_euclid(factor, eq.1);
 
-        res += ((-(eq.0 as i64)) * (factor * (inv as i64)) % m);
+        res += (-eq.0) * factor * inv;
 
         res = res % m;
     }
 
     let res = if res < 0 { res + m } else { res };
 
-    res as u64
+    res as i64
 }
 
 fn extended_euclid(m: i64, n: i64) -> (i64, i64) {
