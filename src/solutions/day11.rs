@@ -1,6 +1,6 @@
 use crate::day11::Type::*;
-use crate::util::puzzle_input;
 use crate::util::map::{Map, Terrain, TerrainErr};
+use crate::util::puzzle_input;
 
 pub fn print_solution() {
     let map = Map::<Type>::configure(&puzzle_input::read_input("day11")).unwrap();
