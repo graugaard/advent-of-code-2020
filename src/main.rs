@@ -21,6 +21,9 @@ fn main() {
     day11::print_solution();
     day12::print_solution();
     day13::print_solution();
+    day14::print_solution();
     day15::print_solution();
+
+    println!();
     day17::print_solution();
 }
