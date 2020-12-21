@@ -12,11 +12,6 @@ pub fn print_solution() {
     println!("Day 14 Solution Part 1: {}", answer);
 }
 
-#[derive(Debug, Eq, PartialEq, Clone)]
-struct Mask {
-    mask: Vec<(usize, u8)>,
-}
-
 fn run_program(str: &str) -> HashMap<u64, u64> {
     let mut current_mask = Mask::default();
     let mut state = HashMap::new();
@@ -36,6 +31,18 @@ fn run_program(str: &str) -> HashMap<u64, u64> {
     state
 }
 
+#[derive(Debug, Eq, PartialEq, Clone)]
+pub enum MaskBit {
+    One,
+    Zero,
+    WildCard,
+}
+
+#[derive(Debug, Eq, PartialEq, Clone)]
+struct Mask {
+    mask: Vec<(usize, MaskBit)>,
+}
+
 impl Default for Mask {
     fn default() -> Self {
         Self { mask: Vec::new() }
@@ -47,8 +54,18 @@ impl Mask {
         let mut result = 0;
         for i in 0..64 {
             result = result << 1;
-            let n = match self.mask.iter().find(|&bit| bit.0 == i) {
-                Some((_, i)) => *i as u64,
+            let n = match self
+                .mask
+                .iter()
+                .find(|&(idx, mask_bit)| *idx == i as usize && *mask_bit != MaskBit::WildCard)
+            {
+                Some((_, mask_bit)) => {
+                    if MaskBit::Zero == *mask_bit {
+                        0
+                    } else {
+                        1
+                    }
+                }
                 None => {
                     if bits & (1 << 63 - i) != 0 {
                         1
@@ -75,9 +92,9 @@ impl FromStr for Mask {
 
         for (idx, c) in s.chars().enumerate() {
             match c {
-                '0' => mask.push((offset + idx, 0)),
-                '1' => mask.push((offset + idx, 1)),
-                'X' => {}
+                '0' => mask.push((offset + idx, MaskBit::Zero)),
+                '1' => mask.push((offset + idx, MaskBit::One)),
+                'X' => mask.push((offset + idx, MaskBit::WildCard)),
                 _ => return Err(()),
             }
         }
