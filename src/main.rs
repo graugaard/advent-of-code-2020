@@ -25,5 +25,6 @@ fn main() {
     day15::print_solution();
 
     println!();
+    day16::print_solution();
     day17::print_solution();
 }
