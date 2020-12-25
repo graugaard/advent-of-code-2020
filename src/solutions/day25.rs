@@ -1,11 +1,15 @@
 use crate::util::puzzle_input;
 
 pub fn print_solution() {
-    let keys: Vec<u64> = puzzle_input::read_input("day25").lines()
-      .map(|s| s.parse::<u64>().expect("Is a number"))
-      .collect();
+    let keys: Vec<u64> = puzzle_input::read_input("day25")
+        .lines()
+        .map(|s| s.parse::<u64>().expect("Is a number"))
+        .collect();
 
-    println!("Day 25 Solution Part 1: {}", find_key(7, keys[0], keys[1], 20201227));
+    println!(
+        "Day 25 Solution Part 1: {}",
+        find_key(7, keys[0], keys[1], 20201227)
+    );
 }
 
 /// ```
